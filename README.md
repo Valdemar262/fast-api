@@ -31,7 +31,7 @@ implemented yet.
 
 ## Project structure
 
-\```
+```
 src/app/
 ├── core/          # settings, logging, security
 ├── db/            # engine, session, declarative base
@@ -40,16 +40,16 @@ src/app/
 ├── repositories/  # data access layer
 ├── services/      # business logic
 └── api/v1/        # routers, endpoints
-\```
+```
 
 ## Getting started
 
 Requirements: Docker, Docker Compose.
 
-\```bash
+```bash
 cp .env.example .env
 docker compose up --build
-\```
+```
 
 API: http://localhost:8000
 Health check: `GET /health`
