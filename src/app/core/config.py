@@ -3,6 +3,7 @@ from functools import lru_cache
 from pydantic import SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -43,6 +44,7 @@ class Settings(BaseSettings):
     def redis_url(self) -> str:
         pwd = self.redis_password.get_secret_value()
         return f"redis://:{pwd}@{self.redis_host}:{self.redis_port}/0"
+
 
 @lru_cache
 def get_settings() -> Settings:
