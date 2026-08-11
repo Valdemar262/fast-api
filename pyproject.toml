@@ -11,6 +11,7 @@ dependencies = [
     "alembic>=1.13",
     "pydantic-settings>=2.5",
     "redis>=5.0",
+    "pydantic[email]>=2.13.4",
 ]
 
 [dependency-groups]
@@ -20,6 +21,7 @@ dev = [
     "httpx>=0.27",
     "ruff>=0.7",
     "mypy>=1.13",
+    "pydantic[mypy]>=2.13.4",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -36,3 +38,4 @@ target-version = "py312"
 [tool.mypy]
 python_version = "3.12"
 strict = true
+plugins = ["pydantic.mypy"]
