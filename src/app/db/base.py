@@ -1,12 +1,11 @@
-from enum import Enum as PyEnum
-from typing import Any, Callable
+from enum import StrEnum
+from typing import Any, ClassVar
 
-from sqlalchemy import Enum as SAEnum, MetaData
-
-from app.enums import StatementStatus, UserRole
-
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
 
+from app.enums import StatementStatus, UserRole
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
@@ -16,14 +15,15 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s",
 }
 
-def _enum_values(enum_cls: type[PyEnum]) -> list[Callable[[], Any]]:
+
+def _enum_values(enum_cls: type[StrEnum]) -> list[str]:
     return [member.value for member in enum_cls]
 
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
-    type_annotation_map = {
+    type_annotation_map: ClassVar[dict[Any, Any]] = {
         UserRole: SAEnum(UserRole, name="userrole", values_callable=_enum_values),
         StatementStatus: SAEnum(
             StatementStatus, name="statementstatus", values_callable=_enum_values
