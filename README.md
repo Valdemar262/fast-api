@@ -54,6 +54,12 @@ docker compose up --build
 API: http://localhost:8000
 Health check: `GET /health`
 
+## Swagger
+
+```angular2html
+http://localhost:8000/docs
+```
+
 ## Environment variables
 
 See `.env.example`.

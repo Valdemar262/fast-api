@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 class Resource(TimestampMixin, Base):
     __tablename__ = "resources"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
     type: Mapped[str] = mapped_column(String(255))
     description: Mapped[str | None] = mapped_column(Text)

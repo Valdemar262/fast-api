@@ -42,7 +42,9 @@ services:
       context: .
       dockerfile: docker/api/Dockerfile
       target: dev
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: >
+      python -m debugpy --listen 0.0.0.0:5678
+      -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - ./src:/app/src
       - ./alembic:/app/alembic
@@ -51,6 +53,7 @@ services:
       - .env
     ports:
       - "8000:8000"
+      - "5678:5678"
     depends_on:
       db:
         condition: service_healthy

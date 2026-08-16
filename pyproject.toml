@@ -12,6 +12,8 @@ dependencies = [
     "pydantic-settings>=2.5",
     "redis>=5.0",
     "pydantic[email]>=2.13.4",
+    "pyjwt>=2.13.0",
+    "pwdlib[argon2]>=0.3.0",
 ]
 
 [dependency-groups]
@@ -22,6 +24,7 @@ dev = [
     "ruff>=0.7",
     "mypy>=1.13",
     "pydantic[mypy]>=2.13.4",
+    "debugpy>=1.8.21",
 ]
 
 [tool.hatch.build.targets.wheel]
