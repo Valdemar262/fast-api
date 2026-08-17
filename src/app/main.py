@@ -6,6 +6,7 @@ from fastapi import Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.router import api_router
 from app.db.session import engine, get_db
 
 
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 def create_app() -> FastAPI:
     application = FastAPI(title="Chancery API", lifespan=lifespan)
+    application.include_router(api_router)
 
     @application.get("/health")
     async def health() -> dict[str, str]:

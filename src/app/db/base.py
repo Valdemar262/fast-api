@@ -3,7 +3,7 @@ from typing import Any, ClassVar
 
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.enums import StatementStatus, UserRole
 
@@ -29,3 +29,5 @@ class Base(DeclarativeBase):
             StatementStatus, name="statementstatus", values_callable=_enum_values
         ),
     }
+
+    id: Mapped[int] = mapped_column(primary_key=True)

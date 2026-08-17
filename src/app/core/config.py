@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 30
 
-    @computed_field # type: ignore[misc]
+    @computed_field # type: ignore[prop-decorator]
     @property
     def database_url(self) -> str:
         return (
@@ -39,7 +39,7 @@ class Settings(BaseSettings):
             f"{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
 
-    @computed_field # type: ignore[misc]
+    @computed_field # type: ignore[prop-decorator]
     @property
     def redis_url(self) -> str:
         pwd = self.redis_password.get_secret_value()

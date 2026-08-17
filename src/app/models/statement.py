@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 class Statement(TimestampMixin, SoftDeleteMixin, Base):
     __tablename__ = "statements"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255))
     number: Mapped[int]
     date: Mapped[datetime.date | None] = mapped_column(Date)
