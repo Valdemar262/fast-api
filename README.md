@@ -63,3 +63,15 @@ http://localhost:8000/docs
 ## Environment variables
 
 See `.env.example`.
+
+## Command after start application
+
+#### Create admin, user and 3 base resource in system
+```bash
+python -m app.cli seed --fresh
+```
+
+#### Create admin user in system
+```bash
+python -m app.cli create-admin
+```
