@@ -11,9 +11,9 @@ implemented yet.
 
 - [x] Project layout (src-layout, layered architecture: repositories/services/api)
 - [x] Docker infra: FastAPI + PostgreSQL + Redis
-- [ ] Configuration & async DB session layer
-- [ ] Domain models & Alembic migrations
-- [ ] Auth (OAuth2 / JWT)
+- [x] Configuration & async DB session layer
+- [x] Domain models & Alembic migrations
+- [x] Auth (OAuth2 / JWT)
 - [ ] Core domain: Resources, Bookings, Statements
 - [ ] Background jobs (Celery)
 - [ ] Tests
