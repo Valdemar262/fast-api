@@ -5,6 +5,7 @@ import sys
 from pydantic import ValidationError
 
 from app.core.security import hash_password
+from app.db.seed import seed
 from app.db.session import AsyncSessionLocal
 from app.enums import UserRole
 from app.repositories.user import UserRepository
@@ -52,10 +53,20 @@ def main() -> None:
     admin.add_argument("--email", type=str, required=True)
     admin.add_argument("--password", type=str, required=True)
 
+    seed_cmd = sub.add_parser("seed", help="Populate the database with development data")
+    seed_cmd.add_argument(
+        "--fresh",
+        action="store_true",
+        help="Truncate all tables and reset id sequences before seeding",
+    )
+
     args = parser.parse_args()
 
-    if args.command == "create-admin":
-        asyncio.run(create_admin(args.name, args.email, args.password))
+    match args.command:
+        case "create-admin":
+            asyncio.run(create_admin(args.name, args.email, args.password))
+        case "seed":
+            asyncio.run(seed(fresh=args.fresh))
 
 
 if __name__ == "__main__":

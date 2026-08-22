@@ -21,6 +21,7 @@ def _enum_values(enum_cls: type[StrEnum]) -> list[str]:
 
 
 class Base(DeclarativeBase):
+    __mapper_args__ = {"eager_defaults": True}
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
     type_annotation_map: ClassVar[dict[Any, Any]] = {
