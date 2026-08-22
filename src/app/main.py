@@ -11,6 +11,7 @@ from app.api.v1.router import api_router
 from app.db.session import engine, get_db
 from app.exceptions import (
     AppError,
+    BookingConflictError,
     EmailAlreadyExistsError,
     InvalidCredentialsError,
     NotFoundError,
@@ -22,6 +23,7 @@ ERROR_STATUS: dict[type[AppError], int] = {
     EmailAlreadyExistsError: status.HTTP_409_CONFLICT,
     InvalidCredentialsError: status.HTTP_401_UNAUTHORIZED,
     PermissionDeniedError: status.HTTP_403_FORBIDDEN,
+    BookingConflictError: status.HTTP_409_CONFLICT,
 }
 
 
@@ -37,7 +39,7 @@ def create_app() -> FastAPI:
     @application.exception_handler(AppError)
     async def handle_app_error(request: Request, exc: AppError) -> JSONResponse:
         return JSONResponse(
-            status_code=ERROR_STATUS.get(type(exc), status.HTTP_400_BAD_REQUEST),
+            status_code=ERROR_STATUS[type(exc)],
             content={"detail": str(exc)},
         )
 

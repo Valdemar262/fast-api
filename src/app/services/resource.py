@@ -7,7 +7,7 @@ from app.schemas import Page, ResourceCreate, ResourceRead, ResourceUpdate
 
 
 class ResourceService:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         self.resources = ResourceRepository(session)
 
@@ -15,7 +15,7 @@ class ResourceService:
         items = await self.resources.list(limit=limit, offset=offset)
         total = await self.resources.count()
 
-        return Page[ResourceRead](
+        return Page(
             items=[ResourceRead.model_validate(item) for item in items],
             total=total,
             limit=limit,

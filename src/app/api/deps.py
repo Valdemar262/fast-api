@@ -11,6 +11,7 @@ from app.db.session import get_db
 from app.enums import UserRole
 from app.models import User
 from app.repositories.user import UserRepository
+from app.services.booking import BookingService
 from app.services.resource import ResourceService
 
 bearer_scheme = HTTPBearer()
@@ -58,5 +59,8 @@ def require_role(*roles: UserRole) -> Callable[[User], Awaitable[User]]:
 def get_resource_service(session: DbSession) -> ResourceService:
     return ResourceService(session)
 
+def get_booking_service(session: DbSession) -> BookingService:
+    return BookingService(session)
 
 ResourceServiceDep = Annotated[ResourceService, Depends(get_resource_service)]
+BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]
