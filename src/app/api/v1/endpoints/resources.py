@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.deps import CurrentUser, ResourceServiceDep, require_role
+from app.api.deps import BookingServiceDep, CurrentUser, ResourceServiceDep, require_role
 from app.enums import UserRole
 from app.models import Resource
-from app.schemas import Page, ResourceCreate, ResourceRead, ResourceUpdate
+from app.schemas import BookingRead, Page, ResourceCreate, ResourceRead, ResourceUpdate
 
 router = APIRouter(prefix="/resources", tags=["resources"])
 
@@ -64,3 +64,14 @@ async def delete_resource(
         service: ResourceServiceDep,
 ) -> None:
     return await service.delete(resource_id)
+
+
+@router.get("/{resource_id}/bookings", response_model=Page[BookingRead])
+async def get_bookings(
+        resource_id: int,
+        service: BookingServiceDep,
+        _: CurrentUser,
+        limit: int = Query(default=50, ge=1, le=100),
+        offset: int = Query(default=0, ge=0),
+) -> Page[BookingRead]:
+    return await service.list_for_resource(resource_id, limit=limit, offset=offset)
