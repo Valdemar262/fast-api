@@ -13,6 +13,7 @@ from app.models import User
 from app.repositories.user import UserRepository
 from app.services.booking import BookingService
 from app.services.resource import ResourceService
+from app.services.statement import StatementService
 
 bearer_scheme = HTTPBearer()
 
@@ -62,5 +63,9 @@ def get_resource_service(session: DbSession) -> ResourceService:
 def get_booking_service(session: DbSession) -> BookingService:
     return BookingService(session)
 
+def get_statement_service(session: DbSession) -> StatementService:
+    return StatementService(session)
+
 ResourceServiceDep = Annotated[ResourceService, Depends(get_resource_service)]
 BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]
+StatementServiceDep = Annotated[StatementService, Depends(get_statement_service)]

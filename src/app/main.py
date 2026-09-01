@@ -14,6 +14,7 @@ from app.exceptions import (
     BookingConflictError,
     EmailAlreadyExistsError,
     InvalidCredentialsError,
+    InvalidStatusTransitionError,
     NotFoundError,
     PermissionDeniedError,
 )
@@ -24,6 +25,7 @@ ERROR_STATUS: dict[type[AppError], int] = {
     InvalidCredentialsError: status.HTTP_401_UNAUTHORIZED,
     PermissionDeniedError: status.HTTP_403_FORBIDDEN,
     BookingConflictError: status.HTTP_409_CONFLICT,
+    InvalidStatusTransitionError: status.HTTP_409_CONFLICT,
 }
 
 

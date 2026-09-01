@@ -25,7 +25,7 @@ class ResourceService:
     async def get(self, resource_id: int) -> Resource:
         resource = await self.resources.get_by_id(resource_id)
         if resource is None:
-            raise NotFoundError(f"Resource {resource_id} not found")
+            raise NotFoundError(f"Resource for ID: {resource_id} not found")
         return resource
 
     async def create(self, payload: ResourceCreate) -> Resource:
