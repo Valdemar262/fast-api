@@ -19,3 +19,6 @@ class PermissionDeniedError(AppError):
 
 class BookingConflictError(AppError):
     pass
+
+class InvalidStatusTransitionError(AppError):
+    pass
