@@ -8,11 +8,28 @@ from app.schemas.statement import (
     StatementRead,
     StatementUpdate,
 )
-from app.schemas.user import UserBase, UserCreate, UserRead, UserUpdate
+from app.schemas.user import RoleUpdate, UserBase, UserCreate, UserRead, UserUpdate
 
 __all__ = [
-    "AuthResponse", "BaseSchema", "BookingCreate", "BookingRead", "LoginRequest",
-    "Page", "RefreshRequest", "ResourceBase", "ResourceCreate", "ResourceRead",
-    "ResourceUpdate", "StatementCreate", "StatementDetailRead", "StatementRead",
-    "StatementUpdate", "TokenPair", "UserBase", "UserCreate", "UserRead", "UserUpdate",
+    "AuthResponse",
+    "BaseSchema",
+    "BookingCreate",
+    "BookingRead",
+    "LoginRequest",
+    "Page",
+    "RefreshRequest",
+    "ResourceBase",
+    "ResourceCreate",
+    "ResourceRead",
+    "ResourceUpdate",
+    "RoleUpdate",
+    "StatementCreate",
+    "StatementDetailRead",
+    "StatementRead",
+    "StatementUpdate",
+    "TokenPair",
+    "UserBase",
+    "UserCreate",
+    "UserRead",
+    "UserUpdate",
 ]
