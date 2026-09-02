@@ -31,3 +31,6 @@ class UserRead(UserBase):
     role: UserRole
     created_at: datetime
     updated_at: datetime
+
+class RoleUpdate(BaseSchema):
+    role: UserRole
