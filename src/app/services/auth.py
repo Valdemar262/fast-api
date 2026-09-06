@@ -35,7 +35,7 @@ class AuthService:
 
         user = await self.user.create(
             **payload.model_dump(exclude={"password"}),
-            password_hash=hash_password(payload.password)
+            password_hash=hash_password(payload.password),
         )
 
         await self.session.commit()

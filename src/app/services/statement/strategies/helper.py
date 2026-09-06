@@ -5,9 +5,9 @@ from app.models import Statement, StatusHistory
 
 
 def apply_status(
-        session: AsyncSession,
-        statement: Statement,
-        new_status: StatementStatus,
+    session: AsyncSession,
+    statement: Statement,
+    new_status: StatementStatus,
 ) -> None:
     session.add(
         StatusHistory(

@@ -8,7 +8,9 @@ from app.repositories.base import BaseRepository
 class StatementRepository(BaseRepository[Statement]):
     model = Statement
 
-    async def list_for_user(self, user_id: int | None, *, limit: int, offset: int) -> list[Statement]:
+    async def list_for_user(
+        self, user_id: int | None, *, limit: int, offset: int
+    ) -> list[Statement]:
         stmt = select(Statement).where(Statement.deleted_at.is_(None)).limit(limit).offset(offset)
         if user_id is not None:
             # noinspection PyTypeChecker
@@ -35,6 +37,10 @@ class StatementRepository(BaseRepository[Statement]):
         return statement
 
     async def get_active(self, statement_id: int) -> Statement | None:
-        stmt =  select(Statement).where(Statement.deleted_at.is_(None)).where(Statement.id == statement_id)
+        stmt = (
+            select(Statement)
+            .where(Statement.deleted_at.is_(None))
+            .where(Statement.id == statement_id)
+        )
         statement: Statement | None = await self.session.scalar(stmt)
         return statement

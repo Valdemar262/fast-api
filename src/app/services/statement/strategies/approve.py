@@ -16,7 +16,9 @@ class ApproveTransition(StatusTransitionStrategy):
 
     def execute(self, statement: Statement, actor: User) -> None:
         if statement.resource_id is None:
-            raise InvalidStatusTransitionError(f"Resource by ID: {statement.resource_id} not exists")
+            raise InvalidStatusTransitionError(
+                f"Resource by ID: {statement.resource_id} not exists"
+            )
 
         statement.approved_by_id = actor.id
         apply_status(self.session, statement, StatementStatus.APPROVED)

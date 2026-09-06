@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.enums import StatementStatus, StatusTransitionType, UserRole
@@ -16,7 +18,7 @@ class StatementService:
         self.resources = ResourceRepository(session)
 
     async def get(self, statement_id: int) -> Statement:
-        statement = await self.statements.get_by_id(statement_id)
+        statement = await self.statements.get_active(statement_id)
         if statement is None:
             raise NotFoundError(f"Statement for ID: {statement_id} not found")
         return statement
@@ -59,7 +61,9 @@ class StatementService:
             raise PermissionDeniedError("You can only view your own statements")
         return StatementDetailRead.model_validate(statement)
 
-    async def transition(self, statement_id: int, transition: StatusTransitionType, actor: User) -> Statement:
+    async def transition(
+        self, statement_id: int, transition: StatusTransitionType, actor: User
+    ) -> Statement:
         statement = await self.statements.get_active(statement_id)
         if statement is None:
             raise NotFoundError(f"Statement {statement_id} not found")
@@ -75,8 +79,11 @@ class StatementService:
         await self.session.commit()
         return statement
 
-    async def update(self, statement_id: int, payload: StatementUpdate) -> Statement:
+    async def update(self, statement_id: int, payload: StatementUpdate, actor: User) -> Statement:
         statement = await self.get(statement_id)
+
+        if statement.user_id != actor.id and actor.role != UserRole.ADMIN:
+            raise PermissionDeniedError("You can only update your own statements")
 
         for field, value in payload.model_dump(exclude_unset=True).items():
             setattr(statement, field, value)
@@ -84,8 +91,9 @@ class StatementService:
         await self.session.commit()
         return statement
 
-
-    async def delete(self, statement_id: int) -> None:
+    async def delete(self, statement_id: int, actor: User) -> None:
         statement = await self.get(statement_id)
-        await self.statements.delete(statement)
+        if statement.user_id != actor.id and actor.role != UserRole.ADMIN:
+            raise PermissionDeniedError("You can only delete your own statements")
+        statement.deleted_at = datetime.now(UTC)
         await self.session.commit()

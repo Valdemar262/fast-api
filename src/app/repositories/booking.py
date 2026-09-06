@@ -9,7 +9,9 @@ from app.repositories.base import BaseRepository
 class BookingRepository(BaseRepository[Booking]):
     model = Booking
 
-    async def has_overlap(self, *, resource_id: int, start_time: datetime, end_time: datetime) -> bool:
+    async def has_overlap(
+        self, *, resource_id: int, start_time: datetime, end_time: datetime
+    ) -> bool:
         stmt = (
             select(Booking.id)
             .where(
@@ -27,7 +29,9 @@ class BookingRepository(BaseRepository[Booking]):
 
         return await self.session.scalar(stmt) or 0
 
-    async def list_for_resource(self, resource_id: int, *, limit: int, offset: int) -> list[Booking]:
+    async def list_for_resource(
+        self, resource_id: int, *, limit: int, offset: int
+    ) -> list[Booking]:
         stmt = (
             select(Booking)
             .where(Booking.resource_id == resource_id)

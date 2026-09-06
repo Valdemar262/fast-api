@@ -61,14 +61,18 @@ def require_role(*roles: UserRole) -> Callable[[User], Awaitable[User]]:
 def get_resource_service(session: DbSession) -> ResourceService:
     return ResourceService(session)
 
+
 def get_booking_service(session: DbSession) -> BookingService:
     return BookingService(session)
+
 
 def get_statement_service(session: DbSession) -> StatementService:
     return StatementService(session)
 
+
 def get_user_service(session: DbSession) -> UserService:
     return UserService(session)
+
 
 ResourceServiceDep = Annotated[ResourceService, Depends(get_resource_service)]
 BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]

@@ -17,8 +17,10 @@ class InvalidCredentialsError(AppError):
 class PermissionDeniedError(AppError):
     pass
 
+
 class BookingConflictError(AppError):
     pass
+
 
 class InvalidStatusTransitionError(AppError):
     pass

@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     postgres_password: SecretStr
     postgres_host: str = "db"
     postgres_port: int = 5432
+    test_postgres_db: str = "chancery_test"
 
     redis_host: str = "redis"
     redis_port: int = 6379
@@ -30,7 +31,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 30
 
-    @computed_field # type: ignore[prop-decorator]
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def database_url(self) -> str:
         return (
@@ -39,11 +40,20 @@ class Settings(BaseSettings):
             f"{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
 
-    @computed_field # type: ignore[prop-decorator]
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def redis_url(self) -> str:
         pwd = self.redis_password.get_secret_value()
         return f"redis://:{pwd}@{self.redis_host}:{self.redis_port}/0"
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def test_database_url(self) -> str:
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:"
+            f"{self.postgres_password.get_secret_value()}@"
+            f"{self.postgres_host}:{self.postgres_port}/{self.test_postgres_db}"
+        )
 
 
 @lru_cache
