@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
 from app.repositories.booking import BookingRepository
+from tests.conftest import MakeResource, MakeBooking
 
 BASE = datetime(2026, 9, 1, tzinfo=UTC)
 
@@ -31,8 +32,8 @@ def at(hour: float) -> datetime:
 async def test_has_overlap(
     session: AsyncSession,
     client_user: User,
-    make_resource,
-    make_booking,
+    make_resource: MakeResource,
+    make_booking: MakeBooking,
     start: float,
     end: float,
     expected: bool,
