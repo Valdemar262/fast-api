@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from datetime import datetime
 
 import pytest
@@ -20,6 +20,10 @@ from app.main import create_app
 from app.models import Booking, Resource, Statement, User
 
 settings = get_settings()
+
+MakeStatement = Callable[..., Awaitable[Statement]]
+MakeResource = Callable[..., Awaitable[Resource]]
+MakeBooking = Callable[..., Awaitable[Booking]]
 
 
 @pytest.fixture(scope="session")
@@ -101,8 +105,13 @@ def admin_auth(admin_user: User) -> dict[str, str]:
 
 
 @pytest.fixture
-def make_statement(session: AsyncSession):
-    async def _make(user: User, *, status:StatementStatus=StatementStatus.DRAFT, resource_id=None) -> Statement:
+def make_statement(session: AsyncSession) -> MakeStatement:
+    async def _make(
+        user: User,
+        *,
+        status: StatementStatus = StatementStatus.DRAFT,
+        resource_id: int | None = None,
+    ) -> Statement:
         statement = Statement(
             title="Test statement",
             number=1,
@@ -119,7 +128,7 @@ def make_statement(session: AsyncSession):
 
 
 @pytest.fixture
-def make_resource(session: AsyncSession):
+def make_resource(session: AsyncSession) -> MakeResource:
     async def _make(name: str = "Room A") -> Resource:
         resource = Resource(name=name, type="room")
         session.add(resource)
@@ -130,7 +139,7 @@ def make_resource(session: AsyncSession):
 
 
 @pytest.fixture
-def make_booking(session: AsyncSession):
+def make_booking(session: AsyncSession) -> MakeBooking:
     async def _make(user: User, resource: Resource, start: datetime, end: datetime) -> Booking:
         booking = Booking(
             user_id=user.id,

@@ -32,6 +32,7 @@ dev = [
     "mypy>=1.13",
     "pydantic[mypy]>=2.13.4",
     "debugpy>=1.8.21",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -49,3 +50,10 @@ target-version = "py312"
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
+
+[tool.coverage.run]
+source = ["src/app"]
+omit = ["src/app/cli.py", "src/app/db/seed.py"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "\\.\\.\\."]

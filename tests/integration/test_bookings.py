@@ -1,13 +1,10 @@
-from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime, timedelta
 
 import pytest
 from httpx import AsyncClient
 
-from app.models import Booking, Resource, User
-
-MakeResource = Callable[..., Awaitable[Resource]]
-MakeBooking = Callable[..., Awaitable[Booking]]
+from app.models import User
+from tests.conftest import MakeBooking, MakeResource
 
 BASE = datetime(2026, 10, 1, tzinfo=UTC)
 

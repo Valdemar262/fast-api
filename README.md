@@ -4,6 +4,8 @@ Resource booking API — a from-scratch Python/FastAPI port of an existing Larav
 application, built as a portfolio project to practice and demonstrate clean
 backend architecture in Python.
 
+![CI](https://github.com/Valdemar262/fast-api/actions/workflows/ci.yml/badge.svg)
+
 ## Status
 
 Early stage: infrastructure and project skeleton are ready, domain logic is not

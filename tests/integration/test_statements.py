@@ -1,12 +1,8 @@
-from collections.abc import Awaitable, Callable
-
 from httpx import AsyncClient
 
 from app.enums import StatementStatus
-from app.models import Resource, Statement, User
-
-MakeStatement = Callable[..., Awaitable[Statement]]
-MakeResource = Callable[..., Awaitable[Resource]]
+from app.models import User
+from tests.conftest import MakeResource, MakeStatement
 
 CREATE_PAYLOAD = {"title": "Booking request", "number": 1}
 
