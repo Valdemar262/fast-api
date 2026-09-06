@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
 from app.repositories.booking import BookingRepository
-from tests.conftest import MakeResource, MakeBooking
+from tests.conftest import MakeBooking, MakeResource
 
 BASE = datetime(2026, 9, 1, tzinfo=UTC)
 
