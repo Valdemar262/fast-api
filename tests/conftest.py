@@ -102,7 +102,9 @@ def admin_auth(admin_user: User) -> dict[str, str]:
 
 @pytest.fixture
 def make_statement(session: AsyncSession):
-    async def _make(user: User, *, status: StatementStatus = StatementStatus.DRAFT, resource_id=None) -> Statement:
+    async def _make(
+        user: User, *, status: StatementStatus = StatementStatus.DRAFT, resource_id=None
+    ) -> Statement:
         statement = Statement(
             title="Test statement",
             number=1,
