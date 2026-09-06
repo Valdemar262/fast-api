@@ -1,10 +1,6 @@
-from collections.abc import Awaitable, Callable
-
 from httpx import AsyncClient
 
-from app.models import Resource
-
-MakeResource = Callable[..., Awaitable[Resource]]
+from tests.conftest import MakeResource
 
 CREATE_PAYLOAD = {"name": "Room B", "type": "room", "description": "Six seats"}
 
