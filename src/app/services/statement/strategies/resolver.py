@@ -16,7 +16,7 @@ _STRATEGIES: Mapping[StatusTransitionType, Callable[[AsyncSession], StatusTransi
 
 
 def resolve_strategy(
-        transition: StatusTransitionType,
-        session: AsyncSession,
+    transition: StatusTransitionType,
+    session: AsyncSession,
 ) -> StatusTransitionStrategy:
     return _STRATEGIES[transition](session)

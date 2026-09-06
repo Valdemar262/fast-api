@@ -34,7 +34,6 @@ async def truncate_all(session: AsyncSession) -> None:
 
 async def seed(*, fresh: bool = False) -> None:
     async with AsyncSessionLocal() as session:
-
         if fresh:
             await truncate_all(session)
 

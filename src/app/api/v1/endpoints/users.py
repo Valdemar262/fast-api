@@ -14,9 +14,9 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(require_role(UserRole.ADMIN))],
 )
 async def list_users(
-        service: UserServiceDep,
-        limit: int = Query(default=50, ge=1, le=100),
-        offset: int = Query(default=0, ge=0),
+    service: UserServiceDep,
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
 ) -> Page[UserRead]:
     return await service.list_users(limit=limit, offset=offset)
 
@@ -25,19 +25,15 @@ async def list_users(
     "/me",
     response_model=UserRead,
 )
-async def update_user(
-        payload: UserUpdate,
-        service: UserServiceDep,
-        actor: CurrentUser
-) -> User:
+async def update_user(payload: UserUpdate, service: UserServiceDep, actor: CurrentUser) -> User:
     return await service.update(actor, payload)
 
 
 @router.get("/{user_id}", response_model=UserRead)
 async def get_user(
-        user_id: int,
-        service: UserServiceDep,
-        actor: CurrentUser,
+    user_id: int,
+    service: UserServiceDep,
+    actor: CurrentUser,
 ) -> UserRead:
     return await service.get_profile(user_id, actor)
 
@@ -48,9 +44,9 @@ async def get_user(
     dependencies=[Depends(require_role(UserRole.ADMIN))],
 )
 async def update_user_role(
-        user_id: int,
-        payload: RoleUpdate,
-        service: UserServiceDep,
+    user_id: int,
+    payload: RoleUpdate,
+    service: UserServiceDep,
 ) -> User:
     return await service.update_role(user_id, payload)
 
@@ -61,8 +57,8 @@ async def update_user_role(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(
-        user_id: int,
-        service: UserServiceDep,
-        actor: CurrentUser,
+    user_id: int,
+    service: UserServiceDep,
+    actor: CurrentUser,
 ) -> None:
     return await service.delete(user_id, actor)

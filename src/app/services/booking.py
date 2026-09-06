@@ -26,20 +26,26 @@ class BookingService:
         )
 
         if has_overlap:
-            raise BookingConflictError(f"Resource {payload.resource_id} is already booked for this time range")
+            raise BookingConflictError(
+                f"Resource {payload.resource_id} is already booked for this time range"
+            )
 
         booking = await self.bookings.create(**payload.model_dump(), user_id=user_id)
         await self.session.commit()
         return booking
 
-    async def list_for_resource(self, resource_id: int, *, limit: int, offset: int) -> Page[BookingRead]:
+    async def list_for_resource(
+        self, resource_id: int, *, limit: int, offset: int
+    ) -> Page[BookingRead]:
         resource = await self.resources.get_by_id(resource_id)
 
         if resource is None:
             raise NotFoundError(f"Resource {resource_id} not found")
 
         total = await self.bookings.count_for_resource(resource_id=resource_id)
-        items = await self.bookings.list_for_resource(resource_id=resource_id, limit=limit, offset=offset)
+        items = await self.bookings.list_for_resource(
+            resource_id=resource_id, limit=limit, offset=offset
+        )
 
         return Page(
             items=[BookingRead.model_validate(item) for item in items],

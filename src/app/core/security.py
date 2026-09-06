@@ -47,9 +47,7 @@ def create_access_token(user_id: int) -> str:
 
 def create_refresh_token(user_id: int) -> str:
     return _create_token(
-        user_id,
-        REFRESH_TOKEN_TYPE,
-        timedelta(days=settings.refresh_token_expire_days)
+        user_id, REFRESH_TOKEN_TYPE, timedelta(days=settings.refresh_token_expire_days)
     )
 
 
