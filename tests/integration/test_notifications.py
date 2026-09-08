@@ -1,14 +1,6 @@
-"""Integration tests: the right notification job is enqueued, after the commit.
-
-These stop at the queue boundary — the spy replaces `.delay`, so nothing is
-executed. What the job does once it runs is covered by
-`tests/unit/test_mail_task.py`.
-"""
-
 import json
 from datetime import UTC, datetime, timedelta
 
-import pytest
 from httpx import AsyncClient
 
 from app.enums import StatementStatus
@@ -16,18 +8,6 @@ from app.models import User
 from tests.conftest import MakeResource, MakeStatement
 
 BASE = datetime(2026, 11, 1, tzinfo=UTC)
-
-
-@pytest.fixture
-def enqueued_tasks(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, str]]:
-    """Record what was handed to Celery, patched where it is used."""
-    enqueued: list[dict[str, str]] = []
-
-    def fake_delay(**kwargs: str) -> None:
-        enqueued.append(kwargs)
-
-    monkeypatch.setattr("app.notification.base.send_email_task.delay", fake_delay)
-    return enqueued
 
 
 async def test_submit_enqueues_a_job_for_the_owner(
@@ -55,7 +35,6 @@ async def test_approve_enqueues_a_job_for_the_owner_not_the_admin(
     make_resource: MakeResource,
     enqueued_tasks: list[dict[str, str]],
 ) -> None:
-    """The mail goes to the statement's author, not to whoever pressed approve."""
     resource = await make_resource()
     statement = await make_statement(
         client_user, status=StatementStatus.SUBMITTED, resource_id=resource.id
@@ -92,7 +71,6 @@ async def test_a_refused_transition_enqueues_nothing(
     make_statement: MakeStatement,
     enqueued_tasks: list[dict[str, str]],
 ) -> None:
-    """No state change means no job."""
     statement = await make_statement(client_user, status=StatementStatus.DRAFT)
 
     response = await client.post(f"/api/v1/statements/{statement.id}/approve", headers=admin_auth)
@@ -155,7 +133,6 @@ async def test_enqueued_arguments_are_json_serialisable(
     make_statement: MakeStatement,
     enqueued_tasks: list[dict[str, str]],
 ) -> None:
-    """Celery serialises arguments as JSON — an ORM object would break the job."""
     statement = await make_statement(client_user, status=StatementStatus.DRAFT)
 
     await client.post(f"/api/v1/statements/{statement.id}/submit", headers=client_auth)
