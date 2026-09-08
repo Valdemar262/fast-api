@@ -14,6 +14,8 @@ dependencies = [
     "pydantic[email]>=2.13.4",
     "pyjwt>=2.13.0",
     "pwdlib[argon2]>=0.3.0",
+    "aiosmtplib>=5.1.2",
+    "celery[redis]>=5.6.3",
 ]
 
 [tool.pytest.ini_options]
@@ -57,3 +59,11 @@ omit = ["src/app/cli.py", "src/app/db/seed.py"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "\\.\\.\\."]
+
+[[tool.mypy.overrides]]
+module = ["celery.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["app.tasks.*"]
+disallow_untyped_decorators = false

@@ -152,3 +152,8 @@ def make_booking(session: AsyncSession) -> MakeBooking:
         return booking
 
     return _make
+
+
+@pytest.fixture(autouse=True)
+def disable_mail(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("app.core.mail.settings.mail_enabled", False)

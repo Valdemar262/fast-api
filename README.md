@@ -1,10 +1,10 @@
 # Chancery
 
+![CI](https://github.com/Valdemar262/fast-api/actions/workflows/ci.yml/badge.svg)
+
 Resource booking API — a from-scratch Python/FastAPI port of an existing Laravel
 application, built as a portfolio project to practice and demonstrate clean
 backend architecture in Python.
-
-![CI](https://github.com/Valdemar262/fast-api/actions/workflows/ci.yml/badge.svg)
 
 ## Status
 

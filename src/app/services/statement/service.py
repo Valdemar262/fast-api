@@ -1,12 +1,20 @@
 from datetime import UTC, datetime
+from typing import ClassVar
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.enums import StatementStatus, StatusTransitionType, UserRole
 from app.exceptions import InvalidStatusTransitionError, NotFoundError, PermissionDeniedError
 from app.models import Statement, User
+from app.notification.statement import (
+    StatementApprovedNotification,
+    StatementNotification,
+    StatementRejectedNotification,
+    StatementSubmittedNotification,
+)
 from app.repositories.resource import ResourceRepository
 from app.repositories.statement import StatementRepository
+from app.repositories.user import UserRepository
 from app.schemas import Page, StatementCreate, StatementDetailRead, StatementRead, StatementUpdate
 from app.services.statement.strategies import resolve_strategy
 
@@ -16,6 +24,7 @@ class StatementService:
         self.session = session
         self.statements = StatementRepository(session)
         self.resources = ResourceRepository(session)
+        self.users = UserRepository(session)
 
     async def get(self, statement_id: int) -> Statement:
         statement = await self.statements.get_active(statement_id)
@@ -77,6 +86,8 @@ class StatementService:
 
         strategy.execute(statement, actor)
         await self.session.commit()
+
+        await self._notify_transition(statement, transition)  # ← потом уведомляем
         return statement
 
     async def update(self, statement_id: int, payload: StatementUpdate, actor: User) -> Statement:
@@ -97,3 +108,18 @@ class StatementService:
             raise PermissionDeniedError("You can only delete your own statements")
         statement.deleted_at = datetime.now(UTC)
         await self.session.commit()
+
+    _NOTIFICATIONS: ClassVar[dict[StatusTransitionType, type[StatementNotification]]] = {
+        StatusTransitionType.SUBMIT: StatementSubmittedNotification,
+        StatusTransitionType.APPROVE: StatementApprovedNotification,
+        StatusTransitionType.REJECT: StatementRejectedNotification,
+    }
+
+    async def _notify_transition(
+        self, statement: Statement, transition: StatusTransitionType
+    ) -> None:
+        owner = await self.users.get_by_id(statement.user_id)
+        if owner is None:
+            return
+
+        self._NOTIFICATIONS[transition](statement).send(owner.email)
