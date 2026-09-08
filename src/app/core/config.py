@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 30
 
+    smtp_host: str = "mailpit"
+    smtp_port: int = 1025
+    mail_from: str = "noreply@chancery.local"
+    mail_enabled: bool = True
+    celery_eager: bool = False
+
     @computed_field  # type: ignore[prop-decorator]
     @property
     def database_url(self) -> str:

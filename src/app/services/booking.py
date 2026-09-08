@@ -2,9 +2,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.enums import UserRole
 from app.exceptions import BookingConflictError, NotFoundError, PermissionDeniedError
-from app.models import Booking, User
+from app.models import Booking, Resource, User
+from app.notification import BookingCreatedNotification
 from app.repositories.booking import BookingRepository
 from app.repositories.resource import ResourceRepository
+from app.repositories.user import UserRepository
 from app.schemas import BookingCreate, BookingRead, Page
 
 
@@ -13,6 +15,7 @@ class BookingService:
         self.session = session
         self.bookings = BookingRepository(session)
         self.resources = ResourceRepository(session)
+        self.users = UserRepository(session)
 
     async def create(self, payload: BookingCreate, *, user_id: int) -> Booking:
         resource = await self.resources.get_by_id(payload.resource_id)
@@ -32,7 +35,16 @@ class BookingService:
 
         booking = await self.bookings.create(**payload.model_dump(), user_id=user_id)
         await self.session.commit()
+
+        await self._notify_created(booking, resource, user_id)
         return booking
+
+    async def _notify_created(self, booking: Booking, resource: Resource, user_id: int) -> None:
+        owner = await self.users.get_by_id(user_id)
+        if owner is None:
+            return
+
+        BookingCreatedNotification(booking, resource).send(owner.email)
 
     async def list_for_resource(
         self, resource_id: int, *, limit: int, offset: int

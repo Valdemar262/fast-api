@@ -152,3 +152,19 @@ def make_booking(session: AsyncSession) -> MakeBooking:
         return booking
 
     return _make
+
+
+@pytest.fixture(autouse=True)
+def disable_mail(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("app.core.mail.settings.mail_enabled", False)
+
+
+@pytest.fixture(autouse=True)
+def enqueued_tasks(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, str]]:
+    enqueued: list[dict[str, str]] = []
+
+    def fake_delay(**kwargs: str) -> None:
+        enqueued.append(kwargs)
+
+    monkeypatch.setattr("app.notification.base.send_email_task.delay", fake_delay)
+    return enqueued
