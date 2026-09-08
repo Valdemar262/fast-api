@@ -23,8 +23,8 @@ async def get_resource(
     resource_id: int,
     service: ResourceServiceDep,
     _: CurrentUser,
-) -> Resource:
-    return await service.get(resource_id)
+) -> ResourceRead:
+    return await service.get_read(resource_id)
 
 
 @router.post(

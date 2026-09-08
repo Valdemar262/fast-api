@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import cache
 from app.core.security import ACCESS_TOKEN_TYPE, decode_token
 from app.db.session import get_db
 from app.enums import UserRole
@@ -59,7 +60,7 @@ def require_role(*roles: UserRole) -> Callable[[User], Awaitable[User]]:
 
 
 def get_resource_service(session: DbSession) -> ResourceService:
-    return ResourceService(session)
+    return ResourceService(session, cache)
 
 
 def get_booking_service(session: DbSession) -> BookingService:

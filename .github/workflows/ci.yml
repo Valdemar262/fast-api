@@ -23,6 +23,15 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v4
 
@@ -54,5 +63,6 @@ jobs:
           POSTGRES_USER: chancery
           POSTGRES_PASSWORD: chancery
           TEST_POSTGRES_DB: chancery_test
-          REDIS_PASSWORD: unused
+          REDIS_HOST: localhost
+          REDIS_PASSWORD: ""
           JWT_SECRET_KEY: ci-secret-not-used-in-production

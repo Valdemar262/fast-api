@@ -35,7 +35,11 @@ class Settings(BaseSettings):
     smtp_port: int = 1025
     mail_from: str = "noreply@chancery.local"
     mail_enabled: bool = True
+
     celery_eager: bool = False
+
+    cache_enabled: bool = True
+    cache_ttl_seconds: int = 300
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -49,8 +53,9 @@ class Settings(BaseSettings):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def redis_url(self) -> str:
-        pwd = self.redis_password.get_secret_value()
-        return f"redis://:{pwd}@{self.redis_host}:{self.redis_port}/0"
+        password = self.redis_password.get_secret_value()
+        auth = f":{password}@" if password else ""
+        return f"redis://{auth}{self.redis_host}:{self.redis_port}/0"
 
     @computed_field  # type: ignore[prop-decorator]
     @property
