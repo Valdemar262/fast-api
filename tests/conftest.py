@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from app.core.cache import redis_client
 from app.core.config import get_settings
 from app.core.security import create_access_token, hash_password
 from app.db.base import Base
@@ -168,3 +169,10 @@ def enqueued_tasks(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, str]]:
 
     monkeypatch.setattr("app.notification.base.send_email_task.delay", fake_delay)
     return enqueued
+
+
+@pytest.fixture(autouse=True)
+async def clear_cache() -> AsyncGenerator[None, None]:
+    await redis_client.flushdb()
+    yield
+    await redis_client.flushdb()
