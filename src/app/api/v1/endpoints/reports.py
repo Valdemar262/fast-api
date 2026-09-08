@@ -14,6 +14,11 @@ router = APIRouter(prefix="/reports", tags=["reports"])
     dependencies=[Depends(require_role(UserRole.ADMIN))],
     response_class=StreamingResponse,
     summary="Download a report as CSV",
+    responses={
+        200: {"content": {"text/csv": {}}, "description": "CSV file"},
+        401: {"description": "Missing or invalid token"},
+        403: {"description": "Requires the admin role"},
+    },
 )
 async def download_report(
     report_type: ReportType,

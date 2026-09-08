@@ -56,7 +56,7 @@ jobs:
         run: uv run mypy src tests
 
       - name: Tests
-        run: uv run pytest -v --cov=src/app --cov-report=term-missing
+        run: uv run pytest -v --cov=src/app --cov-report=term-missing --cov-fail-under=85
         env:
           POSTGRES_HOST: localhost
           POSTGRES_DB: chancery_test
