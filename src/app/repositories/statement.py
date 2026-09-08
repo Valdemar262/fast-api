@@ -1,3 +1,7 @@
+from collections.abc import Callable
+from datetime import datetime
+from typing import Any
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
@@ -44,3 +48,15 @@ class StatementRepository(BaseRepository[Statement]):
         )
         statement: Statement | None = await self.session.scalar(stmt)
         return statement
+
+    async def statements_by_status(self, since: datetime | None) -> dict[Any, Callable[[Any], int]]:
+        stmt = (
+            select(Statement.status, func.count().label("count"))
+            .where(Statement.deleted_at.is_(None))
+            .group_by(Statement.status)
+        )
+        if since is not None:
+            stmt = stmt.where(Statement.created_at >= since)
+
+        result = await self.session.execute(stmt)
+        return {row.status: row.count for row in result}
