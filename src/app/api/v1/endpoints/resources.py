@@ -8,7 +8,12 @@ from app.schemas import BookingRead, Page, ResourceCreate, ResourceRead, Resourc
 router = APIRouter(prefix="/resources", tags=["resources"])
 
 
-@router.get("", response_model=Page[ResourceRead])
+@router.get(
+    "",
+    response_model=Page[ResourceRead],
+    summary="List resources",
+    responses={401: {"description": "Missing or invalid token"}},
+)
 async def list_resources(
     service: ResourceServiceDep,
     _: CurrentUser,
@@ -18,7 +23,12 @@ async def list_resources(
     return await service.list(limit=limit, offset=offset)
 
 
-@router.get("/{resource_id}", response_model=ResourceRead)
+@router.get(
+    "/{resource_id}",
+    response_model=ResourceRead,
+    summary="Read one resource",
+    responses={401: {"description": "Missing or invalid token"}, 404: {"description": "Not found"}},
+)
 async def get_resource(
     resource_id: int,
     service: ResourceServiceDep,
@@ -32,6 +42,11 @@ async def get_resource(
     dependencies=[Depends(require_role(UserRole.ADMIN))],
     response_model=ResourceRead,
     status_code=status.HTTP_201_CREATED,
+    summary="Create a resource",
+    responses={
+        401: {"description": "Missing or invalid token"},
+        403: {"description": "Requires the admin role"},
+    },
 )
 async def create_resource(
     payload: ResourceCreate,
@@ -45,6 +60,12 @@ async def create_resource(
     dependencies=[Depends(require_role(UserRole.ADMIN))],
     response_model=ResourceRead,
     status_code=status.HTTP_200_OK,
+    summary="Update a resource",
+    responses={
+        401: {"description": "Missing or invalid token"},
+        403: {"description": "Requires the admin role"},
+        404: {"description": "Resource not found"},
+    },
 )
 async def update_resource(
     resource_id: int,
@@ -58,6 +79,12 @@ async def update_resource(
     "/{resource_id}",
     dependencies=[Depends(require_role(UserRole.ADMIN))],
     status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a resource",
+    responses={
+        401: {"description": "Missing or invalid token"},
+        403: {"description": "Requires the admin role"},
+        404: {"description": "Resource not found"},
+    },
 )
 async def delete_resource(
     resource_id: int,
@@ -66,7 +93,15 @@ async def delete_resource(
     return await service.delete(resource_id)
 
 
-@router.get("/{resource_id}/bookings", response_model=Page[BookingRead])
+@router.get(
+    "/{resource_id}/bookings",
+    response_model=Page[BookingRead],
+    summary="List bookings of a resource, earliest first",
+    responses={
+        401: {"description": "Missing or invalid token"},
+        404: {"description": "Resource not found"},
+    },
+)
 async def get_bookings(
     resource_id: int,
     service: BookingServiceDep,
